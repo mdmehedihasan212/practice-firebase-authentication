@@ -1,5 +1,5 @@
 import './App.css';
-import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithPopup } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -15,7 +15,8 @@ function App() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('')
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
@@ -32,13 +33,28 @@ function App() {
 
   const handleToSubmit = e => {
     e.preventDefault()
+
+    if (!/^([a-z0-9]{6,})$/.test(password)) {
+      setError('Password should contain at least six character')
+      return;
+    }
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
+        setError('');
+        sentVerifyEmail();
         console.log(result.user);
       })
       .catch(error => {
         setError(error.message)
         console.log(error);
+      })
+  }
+
+  const sentVerifyEmail = () => {
+    sendEmailVerification(auth.currentUser)
+      .then(() => {
+        setSuccess('Verify your email account')
       })
   }
 
@@ -97,7 +113,10 @@ function App() {
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
             <Form.Check type="checkbox" label="Check me out" />
           </Form.Group>
+
           <p className='text-danger'>{error}</p>
+          <p className='text-success'>{success}</p>
+
           <Button variant="primary" type="submit">
             Registration
           </Button>
