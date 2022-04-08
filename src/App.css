@@ -2,6 +2,11 @@
     font-family: monospace;
 }
 
+.user-information img {
+    max-width: 50px;
+    min-width: 50px;
+}
+
 @media screen and (max-width:1024px) {
     .button-container {
         display: grid;
@@ -34,9 +39,5 @@
         grid-template-columns: 1fr;
         margin-top: 20px !important;
         margin-left: 0px;
-    }
-
-    .button-container button {
-        margin-top: 20px !important;
     }
 }

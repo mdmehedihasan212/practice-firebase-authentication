@@ -17,7 +17,9 @@ function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [users, setUsers] = useState({})
   const [registered, setRegistered] = useState(false);
+
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
@@ -41,19 +43,21 @@ function App() {
     e.preventDefault();
 
     if (!/^([a-z0-9]{6,})$/.test(password)) {
-      setError('Password should contain at least six character')
+      setSuccess('');
+      setError('Password should contain at least six character');
       return;
     }
 
     if (registered) {
       signInWithEmailAndPassword(auth, email, password)
         .then(result => {
+          const user = result.user;
+          setUsers(user)
           setEmail('');
           setPassword('');
           setError('');
           setSuccess('Successfully Log in');
-          resetPassword();
-          console.log(result.user);
+          // console.log(result.user);
         })
         .catch(error => {
           setError(error.message);
@@ -63,16 +67,18 @@ function App() {
     else {
       createUserWithEmailAndPassword(auth, email, password)
         .then(result => {
+          const user = result.user;
+          setUsers(user)
           setSuccess('Successfully Registered');
           setError('');
           sentVerifyEmail();
           setUpdateUser();
-          console.log(result.user);
+          // console.log(result.user);
         })
         .catch(error => {
           setError(error.message);
           setSuccess('');
-          console.log(error);
+          // console.log(error);
         })
     }
 
@@ -109,6 +115,8 @@ function App() {
   const SingInGoogle = e => {
     signInWithPopup(auth, googleProvider)
       .then(result => {
+        const user = result.user;
+        setUsers(user)
         // console.log(result.user);
       })
       .catch(error => {
@@ -119,6 +127,8 @@ function App() {
   const SingInGithub = e => {
     signInWithPopup(auth, githubProvider)
       .then(result => {
+        const user = result.user;
+        setUsers(user)
         // console.log(result.user);
       })
       .catch(error => {
@@ -129,6 +139,8 @@ function App() {
   const SingInFacebook = e => {
     signInWithPopup(auth, facebookProvider)
       .then(result => {
+        const user = result.user;
+        setUsers(user)
         // console.log(result.user);
       })
       .catch(error => {
@@ -169,11 +181,13 @@ function App() {
             {registered ? 'Login' : 'Registration'}
           </Button>
           <div className="forget-button">
-            {registered && <Button onClick={resetPassword} variant="primary" type="link" className='ms-3'>Forget Password
+            {registered && <Button onClick={resetPassword} variant="primary" type="link" className='mt-3'>Forget Password
             </Button>}
           </div>
-          <br />
-          <br />
+          <div className="user-information mb-4 d-flex justify-content-center align-items-center">
+            <h5 className='me-5'>{users.displayName}</h5>
+            <img src={users.photoURL} alt="" />
+          </div>
           <ButtonGroup>
             <div className='button-container'>
               <Button onClick={SingInGoogle} className='me-3 btn btn-outline-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
