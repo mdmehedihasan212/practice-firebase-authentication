@@ -32,6 +32,11 @@ function App() {
     setPassword(e.target.value);
   }
 
+  const handleToCheck = e => {
+    setRegistered(e.target.checked)
+    console.log(e.target.checked);
+  }
+
   const handleToSubmit = e => {
     e.preventDefault();
 
@@ -40,10 +45,11 @@ function App() {
       return;
     }
 
-    if (!registered) {
+    if (registered) {
       signInWithEmailAndPassword(auth, email, password)
         .then(result => {
-          setSuccess('Successfully Log in');
+          setSuccess('Successfully log in');
+          setError('')
           console.log(result.user);
         })
         .catch(error => {
@@ -53,12 +59,14 @@ function App() {
     else {
       createUserWithEmailAndPassword(auth, email, password)
         .then(result => {
+          setSuccess('Successfully registered');
           setError('');
           sentVerifyEmail();
           console.log(result.user);
         })
         .catch(error => {
           setError(error.message);
+          setSuccess('');
           console.log(error);
         })
     }
@@ -104,13 +112,13 @@ function App() {
 
   return (
     <div>
-      <div className="w-50 mx-auto mt-5">
+      <div className="w-50 mx-auto my-3">
         <Form onSubmit={handleToSubmit}>
-          <h1 className='text-primary'>Please Registration!!</h1>
-          <Form.Group className="mb-3" controlId="formBasicName">
+          <h1 className='text-primary'>Please {registered ? 'Login' : 'Registration'}!!</h1>
+          {!registered && <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Label>Your Name</Form.Label>
             <Form.Control required onBlur={handleToName} type="text" placeholder="Enter your name" />
-          </Form.Group>
+          </Form.Group>}
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
@@ -125,14 +133,14 @@ function App() {
             We'll never share your email and password with anyone else.
           </Form.Text>
           <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
+            <Form.Check onClick={handleToCheck} type="checkbox" label="Already Registered" />
           </Form.Group>
 
           <p className='text-danger'>{error}</p>
           <p className='text-success'>{success}</p>
 
           <Button variant="primary" type="submit">
-            Registration
+            {registered ? 'Login' : 'Registration'}
           </Button>
           <br />
           <br />
