@@ -1,5 +1,5 @@
 import './App.css';
-import { GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -15,6 +15,7 @@ function App() {
 
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
 
   const SingInGoogle = e => {
     signInWithPopup(auth, googleProvider)
@@ -28,6 +29,16 @@ function App() {
 
   const SingInGithub = e => {
     signInWithPopup(auth, githubProvider)
+      .then(result => {
+        // console.log(result.user);
+      })
+      .catch(error => {
+        // console.log(error);
+      })
+  }
+
+  const SingInFacebook = e => {
+    signInWithPopup(auth, facebookProvider)
       .then(result => {
         // console.log(result.user);
       })
@@ -64,7 +75,7 @@ function App() {
           <ButtonGroup>
             <Button onClick={SingInGoogle} className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
             <Button onClick={SingInGithub} className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Github Sing in</Button>
-            <Button className='me-3 text-primary' variant="light"> <BsFacebook></BsFacebook> Facebook Sing in</Button>
+            <Button onClick={SingInFacebook} className='me-3 text-primary' variant="light"> <BsFacebook></BsFacebook> Facebook Sing in</Button>
             <Button className='me-3 text-primary' variant="light"> <BsTwitter></BsTwitter> Twitter Sing in</Button>
           </ButtonGroup>
         </Form>
