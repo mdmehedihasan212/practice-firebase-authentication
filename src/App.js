@@ -1,5 +1,5 @@
 import './App.css';
-import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -17,44 +17,58 @@ function App() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [registered, setRegistered] = useState(false);
   const googleProvider = new GoogleAuthProvider();
   const githubProvider = new GithubAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
 
   const handleToName = e => {
-    setName(e.target.value)
+    setName(e.target.value);
   }
   const handleToEmail = e => {
-    setEmail(e.target.value)
+    setEmail(e.target.value);
   }
   const handleToPassword = e => {
-    setPassword(e.target.value)
+    setPassword(e.target.value);
   }
 
   const handleToSubmit = e => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!/^([a-z0-9]{6,})$/.test(password)) {
       setError('Password should contain at least six character')
       return;
     }
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(result => {
-        setError('');
-        sentVerifyEmail();
-        console.log(result.user);
-      })
-      .catch(error => {
-        setError(error.message)
-        console.log(error);
-      })
+    if (!registered) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          setSuccess('Successfully Log in');
+          console.log(result.user);
+        })
+        .catch(error => {
+          setError(error.message);
+        })
+    }
+    else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(result => {
+          setError('');
+          sentVerifyEmail();
+          console.log(result.user);
+        })
+        .catch(error => {
+          setError(error.message);
+          console.log(error);
+        })
+    }
+
   }
 
   const sentVerifyEmail = () => {
     sendEmailVerification(auth.currentUser)
       .then(() => {
-        setSuccess('Verify your email account')
+        setSuccess('Verify your email account');
       })
   }
 
