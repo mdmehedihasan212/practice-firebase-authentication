@@ -1,5 +1,5 @@
 import './App.css';
-import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -34,7 +34,7 @@ function App() {
 
   const handleToCheck = e => {
     setRegistered(e.target.checked)
-    console.log(e.target.checked);
+    // console.log(e.target.checked);
   }
 
   const handleToSubmit = e => {
@@ -54,6 +54,7 @@ function App() {
         })
         .catch(error => {
           setError(error.message);
+          setSuccess('');
         })
     }
     else {
@@ -62,6 +63,7 @@ function App() {
           setSuccess('Successfully registered');
           setError('');
           sentVerifyEmail();
+          setUpdateUser();
           console.log(result.user);
         })
         .catch(error => {
@@ -78,6 +80,19 @@ function App() {
       .then(() => {
         setSuccess('Verify your email account');
       })
+  }
+
+  const setUpdateUser = () => {
+    updateProfile(auth.currentUser, {
+      displayName: name
+    })
+      .then(() => {
+        // Profile updated!
+        // ...
+      }).catch((error) => {
+        // An error occurred
+        // ...
+      });
   }
 
   const SingInGoogle = e => {
@@ -112,7 +127,7 @@ function App() {
 
   return (
     <div>
-      <div className="w-50 mx-auto my-3">
+      <div className="registered w-50 mx-auto my-3">
         <Form onSubmit={handleToSubmit}>
           <h1 className='text-primary'>Please {registered ? 'Login' : 'Registration'}!!</h1>
           {!registered && <Form.Group className="mb-3" controlId="formBasicName">
