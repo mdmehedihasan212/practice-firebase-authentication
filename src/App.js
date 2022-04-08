@@ -1,5 +1,5 @@
 import './App.css';
-import { GoogleAuthProvider } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -13,7 +13,18 @@ const auth = getAuth(app);
 
 function App() {
 
-  const provider = new GoogleAuthProvider();
+  const googleProvider = new GoogleAuthProvider();
+
+  const SingInGoogle = e => {
+    signInWithPopup(auth, googleProvider)
+      .then(result => {
+        // console.log(result.user);
+      })
+      .catch(error => {
+        // console.log(error);
+      })
+  }
+
   return (
     <div>
       <div className="w-50 mx-auto mt-5">
@@ -40,7 +51,7 @@ function App() {
           <br />
           <br />
           <ButtonGroup>
-            <Button className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
+            <Button onClick={SingInGoogle} className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
             <Button className='me-3 text-primary' variant="light"> <BsFacebook></BsFacebook> Facebook Sing in</Button>
             <Button className='me-3 text-primary' variant="light"> <BsTwitter></BsTwitter> Twitter Sing in</Button>
           </ButtonGroup>
