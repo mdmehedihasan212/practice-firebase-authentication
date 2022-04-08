@@ -30,6 +30,12 @@
         grid-template-columns: 1fr !important;
     }
 
+    .forget-button button {
+        grid-template-columns: 1fr;
+        margin-top: 20px !important;
+        margin-left: 0px;
+    }
+
     .button-container button {
         margin-top: 20px !important;
     }

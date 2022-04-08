@@ -1,5 +1,5 @@
 import './App.css';
-import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, updateProfile } from 'firebase/auth';
 import { Button, ButtonGroup, Form } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsGoogle } from 'react-icons/bs';
@@ -48,8 +48,11 @@ function App() {
     if (registered) {
       signInWithEmailAndPassword(auth, email, password)
         .then(result => {
-          setSuccess('Successfully log in');
-          setError('')
+          setEmail('');
+          setPassword('');
+          setError('');
+          setSuccess('Successfully Log in');
+          resetPassword();
           console.log(result.user);
         })
         .catch(error => {
@@ -60,7 +63,7 @@ function App() {
     else {
       createUserWithEmailAndPassword(auth, email, password)
         .then(result => {
-          setSuccess('Successfully registered');
+          setSuccess('Successfully Registered');
           setError('');
           sentVerifyEmail();
           setUpdateUser();
@@ -75,10 +78,18 @@ function App() {
 
   }
 
+  const resetPassword = () => {
+    sendPasswordResetEmail(auth, email)
+      .then(result => {
+        setError('');
+        setSuccess('Sent Your Reset Password Email');
+      })
+  }
+
   const sentVerifyEmail = () => {
     sendEmailVerification(auth.currentUser)
       .then(() => {
-        setSuccess('Verify your email account');
+        setSuccess('Verify Your Email Account');
       })
   }
 
@@ -157,13 +168,17 @@ function App() {
           <Button variant="primary" type="submit">
             {registered ? 'Login' : 'Registration'}
           </Button>
+          <div className="forget-button">
+            {registered && <Button onClick={resetPassword} variant="primary" type="link" className='ms-3'>Forget Password
+            </Button>}
+          </div>
           <br />
           <br />
           <ButtonGroup>
             <div className='button-container'>
-              <Button onClick={SingInGoogle} className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
-              <Button onClick={SingInGithub} className='me-3 text-primary' variant="light"> <BsGoogle></BsGoogle> Github Sing in</Button>
-              <Button onClick={SingInFacebook} className='me-3 text-primary' variant="light"> <BsFacebook></BsFacebook> Facebook Sing in</Button>
+              <Button onClick={SingInGoogle} className='me-3 btn btn-outline-primary' variant="light"> <BsGoogle></BsGoogle> Google Sing in</Button>
+              <Button onClick={SingInGithub} className='me-3 btn btn-outline-primary' variant="light"> <BsGoogle></BsGoogle> Github Sing in</Button>
+              <Button onClick={SingInFacebook} className='me-3 btn btn-outline-primary' variant="light"> <BsFacebook></BsFacebook> Facebook Sing in</Button>
             </div>
           </ButtonGroup>
         </Form>
